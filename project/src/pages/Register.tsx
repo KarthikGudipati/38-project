@@ -3,9 +3,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthForm } from "@/components/AuthForm";
 import { useToast } from "@/hooks/use-toast";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import { Hash, Rocket } from "lucide-react";
 
-// Mock user database for demonstration
 const MOCK_USERS = [
   { email: "demo@example.com", password: "password123", name: "Demo User" }
 ];
@@ -26,28 +25,24 @@ const Register = () => {
   }) => {
     setLoading(true);
     
-    // Simulate API request delay
     await new Promise(resolve => setTimeout(resolve, 1000));
     
-    // Check if user already exists
     const userExists = MOCK_USERS.some(u => u.email === email);
     
     if (userExists) {
       toast({
         title: "Registration failed",
-        description: "Email already in use",
+        description: "Email already exists",
         variant: "destructive",
       });
-      throw new Error("Email already in use");
+      throw new Error("Email already exists");
     }
     
-    // In a real app, you would send this data to your backend
-    // For demo purposes, we'll just store in localStorage
     localStorage.setItem("user", JSON.stringify({ email, name }));
     
     toast({
-      title: "Registration successful",
-      description: "Your account has been created",
+      title: "🎉 Account created!",
+      description: "Welcome to SEO Keyword Guru - let's optimize your videos!",
     });
     
     navigate("/dashboard");
@@ -55,17 +50,49 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-brand-gray-light dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8 transition-colors duration-300">
-      <div className="absolute top-4 right-4">
-        <ThemeToggle />
-      </div>
-      <div className="w-full max-w-md space-y-8">
-        <div className="text-center">
-          <h1 className="text-4xl font-bold text-brand-purple dark:text-brand-purple-light">HashTag Visualizer</h1>
-          <p className="mt-3 text-gray-600 dark:text-gray-400">Create an account to get started</p>
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-indigo-100 flex items-center justify-center p-6">
+      <div className="w-full max-w-md">
+        <div className="glass-card p-10 animate-slide-up shadow-2xl">
+          <div className="text-center mb-8">
+            <div className="flex items-center justify-center space-x-3 mb-6">
+              <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center">
+                <span className="text-white font-bold text-xl">SK</span>
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900">SEO Keyword Guru</h1>
+              </div>
+            </div>
+            <h2 className="text-xl font-semibold text-gray-700 mb-2">Join the revolution! 🚀</h2>
+            <p className="text-gray-600">Create your account to start optimizing</p>
+          </div>
+          
+          <div className="mb-6 p-5 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl border-2 border-purple-200">
+            <div className="flex items-center space-x-2 mb-3">
+              <Rocket className="h-5 w-5 text-purple-600" />
+              <p className="text-sm font-semibold text-purple-700">What you'll get:</p>
+            </div>
+            <ul className="text-sm text-purple-600 space-y-1">
+              <li>✨ AI-powered video analysis</li>
+              <li>📈 SEO keyword optimization</li>
+              <li>🎯 Viral hashtag suggestions</li>
+              <li>📊 Performance analytics</li>
+            </ul>
+          </div>
+          
+          <AuthForm type="register" onSubmit={handleRegister} />
+          
+          <div className="mt-8 text-center">
+            <p className="text-gray-600">
+              Already have an account?{" "}
+              <button
+                onClick={() => navigate("/login")}
+                className="text-purple-600 hover:text-purple-700 font-semibold underline decoration-2 underline-offset-2"
+              >
+                Sign in
+              </button>
+            </p>
+          </div>
         </div>
-        
-        <AuthForm type="register" onSubmit={handleRegister} />
       </div>
     </div>
   );

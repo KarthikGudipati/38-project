@@ -1,139 +1,97 @@
 
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Check } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
-
-interface PricingPlan {
-  id: string;
-  name: string;
-  price: number;
-  duration: string;
-  description: string;
-  features: string[];
-  savings?: string;
-  isPopular?: boolean;
-  buttonText: string;
-}
 
 export const PricingPlans = () => {
-  const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
-  const { toast } = useToast();
-
-  const plans: PricingPlan[] = [
+  const plans = [
     {
-      id: "monthly",
-      name: "Monthly",
-      price: 20,
-      duration: "month",
-      description: "Perfect for exploring our advanced analytics",
+      name: "Basic",
+      price: "$9",
+      period: "per month",
+      description: "Perfect for getting started",
       features: [
-        "Performance tracking",
-        "Content analysis",
-        "Hashtag optimization",
-        "Competitor insights",
-        "Basic trend reports",
+        "10 video analyses per month",
+        "Basic hashtag suggestions",
+        "Standard support",
+        "Export results"
       ],
-      buttonText: "Subscribe"
+      popular: false
     },
     {
-      id: "semiannual",
-      name: "6 Months",
-      price: 100,
-      duration: "6 months",
-      description: "Great value for dedicated content creators",
+      name: "Pro",
+      price: "$19",
+      period: "per month",
+      description: "Most popular for content creators",
       features: [
-        "Everything in Monthly",
-        "Advanced performance metrics",
+        "Unlimited video analyses",
+        "Advanced AI suggestions",
         "Priority support",
-        "Custom dashboard",
-        "Weekly performance reports",
+        "Custom branding",
+        "Analytics dashboard",
+        "API access"
       ],
-      savings: "Save $20",
-      isPopular: true,
-      buttonText: "Best Value"
+      popular: true
     },
     {
-      id: "annual",
-      name: "Annual",
-      price: 180,
-      duration: "year",
-      description: "Best deal for professional creators",
+      name: "Enterprise",
+      price: "$49",
+      period: "per month",
+      description: "For teams and agencies",
       features: [
-        "Everything in 6 Months",
-        "AI-powered recommendations",
-        "Content strategy planning",
-        "Unlimited analytics history",
-        "Early access to new features",
+        "Everything in Pro",
+        "Team collaboration",
+        "White-label solution",
+        "Dedicated support",
+        "Custom integrations",
+        "Advanced analytics"
       ],
-      savings: "Save $60",
-      buttonText: "Subscribe"
+      popular: false
     }
   ];
 
-  const handleSelectPlan = (planId: string) => {
-    setSelectedPlan(planId);
-    
-    // Simulate subscription process
-    setTimeout(() => {
-      toast({
-        title: "Subscription Successful!",
-        description: `You've subscribed to the ${plans.find(p => p.id === planId)?.name} plan.`,
-      });
-    }, 1000);
-  };
-
   return (
-    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-      {plans.map((plan) => (
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-6">
+      {plans.map((plan, index) => (
         <Card 
-          key={plan.id} 
-          className={`relative overflow-hidden transition-all duration-300 hover:shadow-xl ${
-            plan.isPopular ? 'border-brand-purple dark:border-brand-purple-light border-2' : ''
-          }`}
+          key={plan.name} 
+          className={`relative ${plan.popular ? 'border-emerald-500 border-2' : 'border-gray-200'}`}
         >
-          {plan.isPopular && (
-            <div className="absolute top-0 right-0">
-              <div className="bg-brand-purple dark:bg-brand-purple-light text-white px-3 py-1 text-xs font-medium">
-                Popular
-              </div>
+          {plan.popular && (
+            <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+              <span className="bg-emerald-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+                Most Popular
+              </span>
             </div>
           )}
-          <CardHeader>
-            <CardTitle>{plan.name}</CardTitle>
-            <CardDescription>{plan.description}</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-baseline">
-              <span className="text-3xl font-bold">${plan.price}</span>
-              <span className="text-sm text-muted-foreground ml-1">/{plan.duration}</span>
-            </div>
-            {plan.savings && (
-              <div className="text-sm text-green-600 dark:text-green-400 font-medium">
-                {plan.savings}
+          
+          <CardHeader className="text-center">
+            <CardTitle className="text-2xl">{plan.name}</CardTitle>
+            <div className="space-y-2">
+              <div className="text-3xl font-bold text-emerald-600">
+                {plan.price}
+                <span className="text-lg text-gray-500 font-normal">/{plan.period.split(' ')[1]}</span>
               </div>
-            )}
-            <ul className="space-y-2">
-              {plan.features.map((feature, i) => (
-                <li key={i} className="flex items-center">
-                  <Check className="h-4 w-4 text-green-500 mr-2" />
+              <CardDescription>{plan.description}</CardDescription>
+            </div>
+          </CardHeader>
+          
+          <CardContent className="space-y-4">
+            <ul className="space-y-3">
+              {plan.features.map((feature, idx) => (
+                <li key={idx} className="flex items-center space-x-2">
+                  <Check className="h-4 w-4 text-emerald-500" />
                   <span className="text-sm">{feature}</span>
                 </li>
               ))}
             </ul>
           </CardContent>
+          
           <CardFooter>
             <Button 
-              className={`w-full ${
-                plan.isPopular 
-                  ? 'bg-brand-purple hover:bg-brand-purple-dark dark:bg-brand-purple-light dark:hover:bg-brand-purple' 
-                  : ''
-              }`}
-              onClick={() => handleSelectPlan(plan.id)}
-              disabled={selectedPlan === plan.id}
+              className={`w-full ${plan.popular ? 'primary-btn' : 'secondary-btn'}`}
             >
-              {selectedPlan === plan.id ? "Processing..." : plan.buttonText}
+              Get Started
             </Button>
           </CardFooter>
         </Card>
